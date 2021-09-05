@@ -3,59 +3,51 @@
 - Flutter 앱 만들기 프로젝트
     - flutter로 앱 제작하기
     - 기존에 있던 앱을 클론코딩 or 기존 앱의 불편한점을 개선하여 제작하기
-<br/><br/>
-1. C언어는 현재 전 세계적으로 가장 많이 사용하는 언어.
-    - iot 기기의 사용이 많아짐에 따라 사용량이 떨어졌다가 다시 올라감<br/><br/>
+- - - 
+1. **C언어는 현재 전 세계적으로 가장 많이 사용하는 언어.**
+    - iot 기기의 사용이 많아짐에 따라 사용량이 떨어졌다가 다시 올라감<br/>
 
-2. 자바는 현재 사용 감소중
+2. **자바는 현재 사용 감소중**
     - 저작권 문제 및 다른 좋은 언어가 많음. (Kotlin 등등)
-    - 나쁜 언어는 아님. 트렌드를 생각했을 때 다른 폭넓은 언어를 사용하는것이 좋다.<br/><br/>
+    - 나쁜 언어는 아님. 트렌드를 생각했을 때 다른 폭넓은 언어를 사용하는것이 좋다.<br/>
 
-3. 필드에서는 C, 파이썬을 사용하는 개발자를 원하지만, 파이썬의 사용량은 크게 늘어나지 않음
+3. **필드에서는 C, 파이썬을 사용하는 개발자를 원하지만, 파이썬의 사용량은 크게 늘어나지 않음**
     - 우리나라의 관공서가 자바를 사용한 프레임워크 등을 사용하도록 정책이 정해짐.
 
-## Flutter
-- dart 언어로 만들어진 구글에서 제작한 프레임워크
+# Flutter
+- **dart 언어로 만들어진 구글에서 제작한 프레임워크**
 - 자바스크립트를 대체하기 위해 만들어진 언어
 - 언어가 배우기 쉽고 파이썬을 배웠다면 배우기 더 용이.
-<br/><br/>
+<br/>
 
 # Flutter 환경 설정
 
-1. 안드로이드 스튜디오 및 jdk 1.8 설치
+1. **안드로이드 스튜디오 및 jdk 1.8 설치**
     - 라이선스 문제로 인해 jdk 1.8 설치  
     다운로드: [Java SE Development Kit 8 Downloads](https://www.oracle.com/kr/java/technologies/javase/javase-jdk8-downloads.html)
-<br/><br/>
 
-2. visual studio code 설치   
-    [Visual Studio Code - Code Editing. Redefined](https://code.visualstudio.com/)
-<br/><br/>
+2. **visual studio code 설치**   
+    - [Visual Studio Code - Code Editing. Redefined](https://code.visualstudio.com/)
 
-3. VSCode 플러그인 설치(flutter, dart)
+3. **VSCode 플러그인 설치(flutter, dart)**
     - Flutter 플러그인 설치 시, Dart까지 함께 설치.
-<br/><br/>
 
-4. Flutter 설치   
-    다운로드: [Flutter Install](https://flutter.dev/docs/get-started/install)
-<br/>
+4. **Flutter 설치**
+    - 다운로드: [Flutter Install](https://flutter.dev/docs/get-started/install)
 
 5. 압축을 푼 플러터 폴더를 C 드라이브로 옮기기
     - **경로를 쉽게 설정해주기 위함.**
-<br/><br/>
 
 6. **윈도우 설정 - 고급 시스템 설정 - 환경 변수 - path**
     - 찾아보기 후 다음 경로로 설정
     - C:\flutter_windows_2.2.3-stable\flutter\bin
-<br/><br/>
 
-7. cmd - **flutter doctor** 입력
+7. **cmd - flutter doctor** 입력
     - flutter doctor는 플러터 진단 도구.
-<br/><br/>
 
-8. cmd - 
-**flutter doctor —android-licenses** 입력
+8. **cmd - 
+flutter doctor —android-licenses** 입력
     - 안드로이드 라이센스를 부여하기 위함. jdk 1.8 버전에서 가능.   
-<br/>
 
 9. C드라이브에 작업용 폴더 하나 생성(폴더명은 자유)   
 
@@ -83,8 +75,8 @@ import 'package:flutter/material.dart';
 ```
 
 - 위젯은 두가지가 있다   
-    - StatelessWidget: 상태에 대한 변화가 없는 위젯   
-    - StatefulWidget: 상태에 대한 변화가 있는 위젯   
+    - **StatelessWidget**: 상태에 대한 변화가 없는 위젯   
+    - **StatefulWidget**: 상태에 대한 변화가 있는 위젯   
 <br/>
 
 - 안드로이드 스튜디오 대신 [https://flutlab.io/](https://flutlab.io/) 사용 가능.   
