@@ -125,3 +125,9 @@ return Scaffold(
 
 - JAVA_HOME 에러가 발생하는 경우 보통 환경변수 설정에서 경로를 잘못잡아주었기 때문
 - bin 을 포함한 경로는 안되고, bin 폴더 이전까지의 경로를 경로로 설정한다.
+
+❗ **cmdline-tools 설정 오류가 발생하는 경우**
+
+[I am getting this errors "cmdline-tools component is missing" after installing flutter and android studio... i added andorid sdk. how to solve them?](https://stackoverflow.com/questions/68236007/i-am-getting-this-errors-cmdline-tools-component-is-missing-after-installing-f)
+
+- 안드로이드 스튜디오의 SDK Tools 탭에서 해당 툴 설치
