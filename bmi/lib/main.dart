@@ -44,50 +44,55 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
 
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Center(
               //UI 작성
               child: Text("BMI : ${bmi.toStringAsFixed(2)}",
                 style: const TextStyle(fontSize: 35.0), //const 는 고정이라 붙일 수 있다.
-
               ), //$ 를 붙이면 변수내용을 화면에 출력
             ),
+            const SizedBox(height: 150.0,),
             Row(
-              children: [
-                TextField(
-                  controller: hController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '키(cm)',
+              children: <Widget> [
+                Expanded(
+                  child: TextField(
+                    controller: hController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: '키(cm)',
+                    ),
+                    onChanged: (value){
+                      setState(() {
+                        h= double.parse(value);
+                      });
+                    },
                   ),
-                  onChanged: (value){
-                    setState(() {
-                      h= double.parse(value);
-                    });
-                  },
                 ),
-                const SizedBox(height: 20.0,), //최적화 -> const 사용
-                TextField(
-                  controller: wController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: '몸무게(kg)',
-                  ),
-                  onChanged: (value){
-                    setState(() {
-                      w= double.parse(value);
-                    });
-                  },
+
+                const SizedBox(width: 10.0,),
+                Expanded(
+                  child: TextField(
+                    controller: wController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: '몸무게(kg)',
+                    ),
+                    onChanged: (value){
+                      setState(() {
+                        w= double.parse(value);
+                      });
+                      },
+                    ),
                 ),
               ],
             ),
@@ -106,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: const Text('확인'),
               ),
             ),
-            const SizedBox(height: 60.0,),
+
 
           ],
         ),
