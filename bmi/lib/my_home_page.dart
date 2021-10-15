@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -9,6 +10,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final box = GetStorage();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _hController = TextEditingController(); //입력되는 값을 제어
   final TextEditingController _wController = TextEditingController();
@@ -27,6 +29,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
 
         title: Text("BMI 계산기"),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              box.write('jwt', '');
+            },
+            child:Container(
+              margin: EdgeInsets.only(right: 20.0),
+              child: Icon(Icons.logout)
+            ),
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,
