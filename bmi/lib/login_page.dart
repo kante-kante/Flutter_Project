@@ -1,5 +1,6 @@
+import 'package:bmi/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -10,22 +11,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final box = GetStorage();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _userController = TextEditingController(); //입력되는 값을 제어
+  final TextEditingController _emailController = TextEditingController(); //입력되는 값을 제어
   final TextEditingController _passwordController = TextEditingController();
 
   Widget _userIdWidget(){
     return TextFormField(
-      controller: _userController,
-      keyboardType: TextInputType.number,
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        labelText: '아이디',
+        labelText: '이메일',
       ),
       validator: (String? value){
         if (value!.isEmpty) {// == null or isEmpty
-          return '아이디를 입력해주세요.';
+          return '이메일을 입력해주세요.';
         }
         return null;
       },
@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _passwordWidget(){
     return TextFormField(
       controller: _passwordController,
+      obscureText: true,
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
@@ -71,16 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 8.0), // 8단위 배수가 보기 좋음
                 child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()){
-                        // 키보드 숨김
-                        FocusScope.of(context).requestFocus(FocusNode());
-
-                        //로그인 처리
-                        box.write('jwt','abc');
-
-                      }
-                    },
+                    onPressed: () => _login(),
                     child: const Text("로그인")
                 ),
               ),
@@ -102,5 +94,20 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     // 해당 클래스가 사라질떄
     super.dispose();
+  }
+
+  _login() async {
+    //키보드 숨기기
+    FocusScope.of(context).requestFocus(FocusNode());
+
+    // Firebase 사용자 인증, 사용자 등록
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } on FirebaseAuthException catch (e) {
+      logger.e(e);
+    }
   }
 }
