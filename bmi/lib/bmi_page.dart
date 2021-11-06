@@ -1,4 +1,8 @@
+import 'package:bmi/list_page.dart';
+import 'package:bmi/user_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
 
 class BmiPage extends StatefulWidget {
   const BmiPage({Key? key}) : super(key: key);
@@ -28,12 +32,21 @@ class _BmiPageState extends State<BmiPage> {
         title: Text("BMI 계산기"),
         actions: [
           GestureDetector(
-            onTap: () {
-
+            onTap: () async{
+              Get.to(() => const UserPage());
             },
             child:Container(
               margin: EdgeInsets.only(right: 20.0),
-              child: Icon(Icons.logout)
+              child: Icon(Icons.account_circle),
+            ),
+          ),
+          GestureDetector(
+            onTap: () async{
+              Get.to(() => const ListPage());
+            },
+            child:Container(
+              margin: EdgeInsets.only(right: 20.0),
+              child: Icon(Icons.article),
             ),
           ),
         ],

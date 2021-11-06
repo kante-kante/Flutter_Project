@@ -1,6 +1,9 @@
+import 'package:bmi/bmi_page.dart';
+import 'package:bmi/join_page.dart';
 import 'package:bmi/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -76,6 +79,13 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text("로그인")
                 ),
               ),
+              const SizedBox(height: 20.0),
+              GestureDetector(
+                child: const Text('회원 가입'),
+                onTap: (){
+                  Get.to(() => const JoinPage());
+                },
+              ),
             ],
           ),
         ),
@@ -93,21 +103,50 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     // 해당 클래스가 사라질떄
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
   _login() async {
     //키보드 숨기기
-    FocusScope.of(context).requestFocus(FocusNode());
+    if (_formKey.currentState!.validate()) {
+      FocusScope.of(context).requestFocus(FocusNode());
 
-    // Firebase 사용자 인증, 사용자 등록
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      // Firebase 사용자 인증, 사용자 등록
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+
+        Get.offAll(() => const BmiPage());
+      } on FirebaseAuthException catch (e) {
+        logger.e(e);
+        String message = '';
+
+        if (e.code == 'user-not-found') {
+          message = '사용자가 존재하지 않습니다.';
+        } else if (e.code == 'wrong-password') {
+          message = '비밀번호를 확인하세요';
+        } else if (e.code == 'invalid-email') {
+          message = '이메일을 확인하세요.';
+        }
+
+        /*final snackBar = SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.deepOrange,
       );
-    } on FirebaseAuthException catch (e) {
-      logger.e(e);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      */
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Colors.deepOrange,
+          ),
+        );
+      }
     }
   }
 }
