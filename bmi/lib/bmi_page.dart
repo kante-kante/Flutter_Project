@@ -1,5 +1,8 @@
 import 'package:bmi/list_page.dart';
+import 'package:bmi/main.dart';
 import 'package:bmi/user_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,14 +16,16 @@ class BmiPage extends StatefulWidget {
 }
 
 class _BmiPageState extends State<BmiPage> {
+  final User? user = FirebaseAuth.instance.currentUser;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _hController = TextEditingController(); //입력되는 값을 제어
   final TextEditingController _wController = TextEditingController();
 
-  String _bmi = '0' ;
+  // 6: 저체중, 1: 정상, 2: 과체중, 3: 비만, 4: 대기
+  String _bmi = '' ;
+  String _imageFile = 'assets/images/1.PNG';
 
-  // 0: 대기, 1: 저체중, 2: 정상, 3: 과체중, 4: 비만, 5: 고도비만
-  int _bmiStatus = 0;
+  //int _bmiStatus = 0;
 
 
   @override
@@ -104,73 +109,26 @@ class _BmiPageState extends State<BmiPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 8.0), // 8단위 배수가 보기 좋음
                 child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()){
-                        double h = double.parse(_hController.text);
-                        double w = double.parse(_wController.text);
-                        String bmi = (w /((h /100)*(h /100))).toStringAsFixed(3);
-                        double bmiDouble = w /((h /100)*(h /100));
-
-                        int bmiStatus = 0;
-                        if (bmiDouble < 1.85) {
-                          bmiStatus = 1;
-                          bmi = '저체중($bmi)';
-                        } else if (bmiDouble >= 1.85 && bmiDouble < 23){
-                          bmiStatus = 2;
-                          bmi = '정상($bmi)';
-                        }else if (bmiDouble >= 23 && bmiDouble < 25){
-                          bmiStatus = 3;
-                          bmi = '과체중($bmi)';
-                        }else if (bmiDouble >= 25 && bmiDouble < 30){
-                          bmiStatus = 4;
-                          bmi = '비만($bmi)';
-                        }else if (bmiDouble >= 30){
-                          bmiStatus = 5;
-                          bmi = '고도비만($bmi)';
-                        }
-
-                        setState(() {
-                          _bmi = bmi;
-                          _bmiStatus = bmiStatus;
-                        });
-                      }
-                    },
+                    onPressed: () => _callBMI(),
                     child: const Text("BMI 계산하기")
                 ),
               ),
-              const SizedBox(height: 60.0),
-
-              Center(
-                //UI 작성
-                child: Text("BMI : ${_bmi}",
-                  style: const TextStyle(fontSize: 35.0), //const 는 고정이라 붙일 수 있다.
-
-                ), //$ 를 붙이면 변수내용을 화면에 출력
-              ),
-              Image(
-                width: 200,
-                image: AssetImage(
-                    _bmiStatus == 0
-                        ? 'assets/images/5.PNG'
-                        : _bmiStatus == 1
-                        ? 'assets/images/6.PNG'
-                        : _bmiStatus == 3
-                        ? 'assets/images/1.PNG'
-                        : _bmiStatus == 4
-                        ? 'assets/images/2.PNG'
-                        : 'assets/images/3.PNG'
-                ),
-              ),
+              const SizedBox(height: 20.0),
+              _bmi.isEmpty
+                  ? Container()
+                  : Column(
+                children: [
+                  const SizedBox(height: 20.0),
+                  Text(_bmi),
+                  const SizedBox(height: 20.0),
+                  Image(width: 200.0, image: AssetImage(_imageFile))
+                ],
+              )
             ],
           ),
         ),
       )
-
-
     );
-
-
-
 
   }
   @override
@@ -184,6 +142,59 @@ class _BmiPageState extends State<BmiPage> {
   void dispose() {
     // 해당 클래스가 사라질떄
     super.dispose();
+  }
+
+  _callBMI () {
+    if (_formKey.currentState!.validate()){
+      FocusScope.of(context).requestFocus(FocusNode());
+
+      double h = double.parse(_hController.text);
+      double w = double.parse(_wController.text);
+      double bmi = (w /((h /100)*(h /100)));
+
+      //double bmiDouble = w /((h /100)*(h /100));
+      String bmiText = '저체중';
+      String bmiString = 'BMI: $bmiText(${bmi.toStringAsFixed(2)})';
+      String imageFile = 'assets/images/6.PNG';
+
+      // 무조건 기준 변수가 왼쪽 위치
+      if(bmi >= 20 && bmi < 25){
+        bmiText = '정상';
+        bmiString = 'BMI: $bmiText(${bmi.toStringAsFixed(2)})';
+        imageFile = 'assets/images/1.PNG';
+      }else if(bmi >= 25 && bmi < 30) {
+        bmiText = '과체중';
+        bmiString = 'BMI: $bmiText(${bmi.toStringAsFixed(2)})';
+        imageFile = 'assets/images/2.PNG';
+      }else if(bmi >= 30) {
+        bmiText = '비만';
+        bmiString = 'BMI: $bmiText(${bmi.toStringAsFixed(2)})';
+        imageFile = 'assets/images/3.PNG';
+      }
+
+      setState(() {
+        _bmi = bmiString;
+        _imageFile = imageFile;
+      });
+
+      // Cloud Firestore에 BMI 기록하기
+      CollectionReference bmiCollection = FirebaseFirestore.instance.collection('bmi');
+      bmiCollection.add({
+        'uid': user!.uid,
+        'height': _hController.text,
+        'weight': _wController.text,
+        'bmi': bmi,
+        'text': bmiText,
+        'datetime': DateTime.now().microsecondsSinceEpoch,
+
+      }).catchError((e){
+        logger.e(e);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('$e'),
+          backgroundColor: Colors.deepOrange,
+        ));
+      });
+    }
   }
 
 }

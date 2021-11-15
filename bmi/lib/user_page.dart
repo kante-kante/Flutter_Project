@@ -1,4 +1,8 @@
 import 'package:bmi/login_page.dart';
+import 'package:bmi/main.dart';
+import 'package:bmi/password_edit_page.dart';
+import 'package:bmi/profile_edit_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,7 +62,8 @@ class _UserPageState extends State<UserPage> {
                     child: SizedBox(
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        // 11_1 수정
+                        onPressed: () => Get.to(()=> const ProfileEditPage()),
                         child: const Text('정보 수정'),
                       ),
                     ),
@@ -69,8 +74,8 @@ class _UserPageState extends State<UserPage> {
                     child: SizedBox(
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {},
-                        child: const Text('비밀번호 수정'),
+                          onPressed: () => Get.to(()=> const PasswordEditPage()),
+                          child: const Text('비밀번호 수정'),
                       ),
                     ),
                   ),
@@ -117,12 +122,38 @@ class _UserPageState extends State<UserPage> {
     //해당 클래스가 호출되었을떄
     super.initState();
 
+    // 1차시 edit
+    _getUser();
   }
   @override
   void dispose() {
     // 해당 클래스가 사라질떄
 
     super.dispose();
+  }
+
+  _getUser() {
+    FirebaseFirestore.instance.collection('user')
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if(documentSnapshot.exists){
+        try{
+          dynamic name = documentSnapshot.get(FieldPath(const ['name']));
+          String? email = user!.email;
+          setState(() {
+            _name = name;
+            _email = email!;
+          });
+        } on StateError catch(e){
+          logger.e(e);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('사용자명을 가져올 수 없습니다.'),
+            backgroundColor: Colors.deepOrange,
+          ));
+        }
+      }
+    });
   }
 
 }
