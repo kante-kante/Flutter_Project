@@ -27,10 +27,8 @@ class _BmiPageState extends State<BmiPage> {
 
   //int _bmiStatus = 0;
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       resizeToAvoidBottomInset : false,
       appBar: AppBar(
@@ -117,11 +115,11 @@ class _BmiPageState extends State<BmiPage> {
               _bmi.isEmpty
                   ? Container()
                   : Column(
-                children: [
-                  const SizedBox(height: 20.0),
-                  Text(_bmi),
-                  const SizedBox(height: 20.0),
-                  Image(width: 200.0, image: AssetImage(_imageFile))
+                      children: [
+                        const SizedBox(height: 20.0),
+                        Text(_bmi),
+                        const SizedBox(height: 20.0),
+                        Image(width: 200.0, image: AssetImage(_imageFile))
                 ],
               )
             ],
